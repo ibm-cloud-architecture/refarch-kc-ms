@@ -19,8 +19,10 @@ public class ContainerMetricsProducer extends BaseProducer{
 	
 	private ContainerMetricsProducer() {
 		 Properties p = getConfig().buildProducerProperties(getConfig().getProperties().getProperty(ApplicationConfig.KAFKA_PRODUCER_CLIENTID)+"_container");
+		 System.out.println("Producer properties " + p);
 		 kafkaProducer = new KafkaProducer<String, String>(p);
 	     topic = getConfig().getProperties().getProperty(ApplicationConfig.KAFKA_CONTAINER_TOPIC_NAME);
+	     System.out.println("Producing to " + topic);
 	}
 	
 	public static ContainerMetricsProducer getInstance() {

@@ -41,6 +41,7 @@ public class ShipDAOMockup implements ShipDAO {
 			c.setType("Reefer");
 			c.setRow(row);
 			c.setColumn(column);
+			System.out.println("Containers " + s.getContainers().size());
 			s.getContainers().get(row).add(c);
 			if ( column < s.getMaxColumn()) {
 				column ++;	

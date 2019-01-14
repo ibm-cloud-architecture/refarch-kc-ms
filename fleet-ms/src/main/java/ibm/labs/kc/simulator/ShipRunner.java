@@ -104,7 +104,7 @@ public class ShipRunner implements Runnable {
 
 	public void stop() {
 	  System.out.println("Ship Runner stopping " +  shipName + "...");
-      if (t == null) {
+      if (t != null) {
          t.interrupt();
       }
 	}
