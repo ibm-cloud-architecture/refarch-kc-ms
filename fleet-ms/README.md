@@ -60,6 +60,9 @@ $ ./script/build.sh
 $ ./scripts/runDocker.sh
 # As an alternate the script/run.sh will run the liberty server outside of docker.
 
+# Workaround for NullPointerException when starting Docker :
+# run liberty locally (see command above) once.
+
 # Verify the service is up and running by looking at the fleet API in your web browser http://localhost:9081/api/explorer/ and even execute the GET /fleetms/fleets to get the 3 fleets defined.
 
 # Start the kafka consumer to get container metrics so you can see the solution generating events.
