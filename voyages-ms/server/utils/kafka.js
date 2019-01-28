@@ -30,7 +30,8 @@ const getProducerConfig = () => {
 console.log('before creating producer');
 var producer = new kafka.Producer(getProducerConfig(), {
     'request.required.acks': -1,
-    'produce.offset.report': true
+    'produce.offset.report': true,
+    'message.timeout.ms' : 10000
 });
 
 producer.setPollInterval(100);
