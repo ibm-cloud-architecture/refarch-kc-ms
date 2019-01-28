@@ -36,7 +36,17 @@ var producer = new kafka.Producer(getProducerConfig(), {
 producer.setPollInterval(100);
 producer.connect();
 
-const emit = (event) => {
+producer.on('delivery-report', function(err, dr) {
+    if (err) {
+        console.error('Delivery report: Failed sending message ' + dr.value);
+        console.error(err);
+        // We could retry sending the message
+    } else {
+        console.log('Message produced, offset: ' + dr.offset);
+    }
+});
+
+const emit = (event, callback) => {
     console.log('in emit ' + JSON.stringify(event));
     console.log('producer is ' + producer);
     console.log('topic is ' + config.getOrderTopicName());

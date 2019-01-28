@@ -32,10 +32,15 @@ module.exports = function(app) {
       }
     }
     console.log('built' + JSON.stringify(event));
-    emitter.emit(event);
-    res.json(event);
-    console.log('sent' + event);
-
+    emitter.emit(event, function(err) {
+      if (err) {
+        console.log(err);
+        res.status(500).send('Error occured');
+      } else {
+        res.json(event);
+        console.log('sent' + event);
+      }
+    });
   });
 
   app.use('/voyage', router);
