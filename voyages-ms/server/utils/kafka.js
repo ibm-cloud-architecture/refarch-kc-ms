@@ -31,7 +31,7 @@ console.log('before creating producer');
 var producer = new kafka.Producer(getProducerConfig(), {
     'request.required.acks': -1,
     'produce.offset.report': true,
-    'message.timeout.ms' : 10000
+    'message.timeout.ms' : 10000  //speeds up a producer error response
 });
 
 producer.setPollInterval(100);
@@ -58,14 +58,16 @@ const emit = (event) => {
     console.log('topic is ' + config.getOrderTopicName());
 
     if (!ready) {
-        console.log('not ready');
+        // kafka will handle reconnections but the produce method should never 
+        // be called if the client was never 'ready'
+        console.log('not ready yet');
         return Promise.reject(new Error('Not ready'));
     }
 
     return new Promise((resolve, reject) => {
         try {
             producer.produce(config.getOrderTopicName(), 
-                null /* partition */, 
+                null, /* partition */
                 new Buffer(JSON.stringify(event)),
                 null, /* key */
                 Date.now(),
