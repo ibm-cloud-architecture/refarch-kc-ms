@@ -16,5 +16,5 @@ else
 fi
 url="http://$hostn/voyage/$voyageID/assign"
 echo $url
-curl -X POST -H "Content-Type: application/json" -d "@./orderAssign.json" $url
+curl -v -X POST -H "Content-Type: application/json" -d "@./orderAssign.json" $url
 

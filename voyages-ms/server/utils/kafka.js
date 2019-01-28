@@ -35,8 +35,10 @@ var producer = new kafka.Producer(getProducerConfig(), {
 
 producer.setPollInterval(100);
 producer.connect();
+var ready = false;
 producer.on('ready', async () => {
     console.log('ready');
+    ready = true;
 });
 
 producer.on('delivery-report', (err, report) => {
@@ -49,52 +51,34 @@ producer.on('delivery-report', (err, report) => {
     }
 });
 
-const ensureConnected = () => {
-    return new Promise((resolve, reject) => {
-        try {
-            producer.connect(null, function cb(err) {
-                if (err) {
-                    return reject(err);
-                } else {
-                    return resolve(null);
-                }
-            });
-        } catch (e) {
-            console.error('Failed connecting');
-            console.error(e);
-            return reject(e);
-        }
-    });
-}
-
 const emit = (event) => {
     console.log('in emit ' + JSON.stringify(event));
     console.log('producer is ' + producer);
     console.log('topic is ' + config.getOrderTopicName());
 
-    ensureConnected()
-    .then(function () {
+    if (!ready) {
+        console.log('not ready');
+        return Promise.reject(new Error('Not ready'));
+    }
 
-        return new Promise((resolve, reject) => {
-            try {
-                producer.produce(config.getOrderTopicName(), 
-                    null /* partition */, 
-                    new Buffer(JSON.stringify(event)),
-                    null, /* key */
-                    Date.now(),
-                    (err, report) => {
-                        if (err) return reject(err);
-                        return resolve(report);
-                    }
-                );
-            } catch (e) {
-                console.error('Failed sending event ' + event);
-                console.error(e);
-                return reject(e);
-            }
-        });
+    return new Promise((resolve, reject) => {
+        try {
+            producer.produce(config.getOrderTopicName(), 
+                null /* partition */, 
+                new Buffer(JSON.stringify(event)),
+                null, /* key */
+                Date.now(),
+                (err, report) => {
+                    if (err) return reject(err);
+                    return resolve(report);
+                }
+            );
+        } catch (e) {
+            console.error('Failed sending event ' + event);
+            console.error(e);
+            return reject(e);
+        }
     });
-
 }
 
 module.exports = {

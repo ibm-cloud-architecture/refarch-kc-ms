@@ -33,13 +33,13 @@ module.exports = function(app) {
     }
     console.log('built' + JSON.stringify(event));
     emitter.emit(event).then (function(fulfilled) {
-      console.log('sent' + event);  
+      console.log('fulfilled' + event);  
       res.json(event);
     }).catch(function(err){
-      console.log(err);
+      console.log('rejected' + err);  
       res.status(500).send('Error occured');
     });
-  
+
   });
 
   app.use('/voyage', router);
