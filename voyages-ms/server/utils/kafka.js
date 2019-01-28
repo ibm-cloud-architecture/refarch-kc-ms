@@ -35,28 +35,46 @@ var producer = new kafka.Producer(getProducerConfig(), {
 
 producer.setPollInterval(100);
 producer.connect();
+producer.on('ready', async () => {
+    console.log('ready');
+});
 
-producer.on('delivery-report', function(err, dr) {
-    if (err) {
-        console.error('Delivery report: Failed sending message ' + dr.value);
-        console.error(err);
-        // We could retry sending the message
+producer.on('delivery-report', (err, report) => {
+    if (typeof report.opaque === 'function') {
+        report.opaque.call(null, err, report);
     } else {
-        console.log('Message produced, offset: ' + dr.offset);
+        console.error('Assertion failed: opaque not a function!');
+        console.error(err);
+        console.error(report);
     }
 });
 
-const emit = (event, callback) => {
+const emit = (event) => {
     console.log('in emit ' + JSON.stringify(event));
     console.log('producer is ' + producer);
     console.log('topic is ' + config.getOrderTopicName());
-    try {
-        producer.produce(config.getOrderTopicName(), null, new Buffer(JSON.stringify(event)));
-    } catch (err) {
-        console.error('Failed sending event ' + event);
-        console.error(err);
-    }
-    //TODO sync
+
+    //ensureConnected();
+
+    return new Promise((resolve, reject) => {
+        try {
+            producer.produce(config.getOrderTopicName(), 
+                null /* partition */, 
+                new Buffer(JSON.stringify(event)),
+                null, /* key */
+                Date.now(),
+                (err, report) => {
+                    if (err) return reject(err);
+                    return resolve(report);
+                }
+            );
+        } catch (e) {
+            console.error('Failed sending event ' + event);
+            console.error(e);
+            return reject(e);
+        }
+    });
+
 }
 
 module.exports = {
