@@ -38,7 +38,7 @@ producer.setPollInterval(100);
 producer.connect();
 var ready = false;
 producer.on('ready', async () => {
-    console.log('ready');
+    console.log('Connected to Kafka');
     ready = true;
 });
 
@@ -53,15 +53,13 @@ producer.on('delivery-report', (err, report) => {
 });
 
 const emit = (event) => {
-    console.log('in emit ' + JSON.stringify(event));
-    console.log('producer is ' + producer);
-    console.log('topic is ' + config.getOrderTopicName());
+    console.log('emitting ' + JSON.stringify(event));
 
     if (!ready) {
         // kafka will handle reconnections but the produce method should never 
         // be called if the client was never 'ready'
-        console.log('not ready yet');
-        return Promise.reject(new Error('Not ready'));
+        console.log('Not connected to Kafka yet');
+        return Promise.reject(new Error('Not connected to Kafka yet'));
     }
 
     return new Promise((resolve, reject) => {
