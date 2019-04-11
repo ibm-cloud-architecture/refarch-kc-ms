@@ -1,6 +1,7 @@
 FROM websphere-liberty:webProfile7
 LABEL maintainer="IBM Cloud Architecture Solution Engineering team"
-# 3 next lines need to be there to avoid NPE on javametrics-rest, javametrics-dash, fleetms
+
+# Next three lines need to be there to avoid NPE on javametrics-rest, javametrics-dash, fleetms
 COPY /target/liberty/wlp/usr/servers/defaultServer /config/
 COPY /target/liberty/wlp/usr/shared/resources /config/resources/
 COPY /src/main/liberty/config/jvmbx.options /config/jvm.options
@@ -17,9 +18,12 @@ RUN \
     echo yes | keytool -importcert -alias startssl -keystore \
       $JAVA_HOME/lib/security/cacerts -storepass changeit -file /tmp/es-cert.der; \
    fi
+
 USER 1001
+
 # Install required features if not present, install APM Data Collector
 RUN installUtility install  defaultServer apmDataCollector-7.4 openapi-3.0 --acceptLicense
+
 # Upgrade to production license if URL to JAR provided
 ARG LICENSE_JAR_URL
 ENV KAFKA_BROKERS kafka03-prod02.messagehub.services.us-south.bluemix.net:9093,kafka01-prod02.messagehub.services.us-south.bluemix.net:9093,kafka02-prod02.messagehub.services.us-south.bluemix.net:9093,kafka04-prod02.messagehub.services.us-south.bluemix.net:9093,kafka05-prod02.messagehub.services.us-south.bluemix.net:9093
