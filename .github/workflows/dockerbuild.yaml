@@ -53,7 +53,7 @@ jobs:
       id: gitops-repo-webhook
       uses: osowski/repository-dispatch@v1
       with:
-        repository: ibm-cloud-architecture/refarch-kc-gitops
         token: ${{ secrets.WEBHOOK_TOKEN }}
-        event: gitops-refresh
+        repository: ibm-cloud-architecture/refarch-kc-gitops
+        event-type: gitops-refresh
         client-payload: '{"ref": "${{ github.ref }}", "sha": "${{ github.sha}}", "source": "${{ github.repository }}"}'
