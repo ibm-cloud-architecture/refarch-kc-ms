@@ -56,4 +56,4 @@ jobs:
         token: ${{ secrets.WEBHOOK_TOKEN }}
         repository: ibm-cloud-architecture/refarch-kc-gitops
         event-type: gitops-refresh
-        client-payload: '{"ref": "${{ github.ref }}", "sha": "${{ github.sha}}", "source": "${{ github.repository }}"}'
+        client-payload: '{"ref": "${{ github.ref }}", "sha": "${{ github.sha }}", "source": "${{ github.repository }}"}'
