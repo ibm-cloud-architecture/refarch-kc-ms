@@ -51,9 +51,9 @@ jobs:
     #    IMAGE_TAG: ${{ steps.bump-version-action.outputs.new_tag }}
     - name: Webhook to GitOps repo
       id: gitops-repo-webhook
-      uses: osowski/repository-dispatch@1.2.1
+      uses: osowski/repository-dispatch@v1
       with:
         repo: ibm-cloud-architecture/refarch-kc-gitops
-        token: ${{ secrets.GITHUB_TOKEN }}
-        user: ${{ github.actor }}
-        action: gitops-refresh
+        token: ${{ secrets.WEBHOOK_TOKEN }}
+        event: gitops-refresh
+        client-payload: '{"ref": "${{ github.ref }}", "sha": "${{ github.sha}}", "source": "${{ github.repository }}"}'
