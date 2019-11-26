@@ -9,7 +9,7 @@ on:
 
 jobs:
   build-docker-images:
-    if: startsWith(github.repository, 'ibm-cloud-architecture/')
+    #if: startsWith(github.repository, 'ibm-cloud-architecture/')
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@master
@@ -32,31 +32,28 @@ jobs:
         DOCKER_P: ${{ secrets.DOCKER_PASSWORD }}
         WORKDIR: fleet-ms
         DOCKERFILE: Dockerfile.multistage
-        IMAGE_NAME: ibmcase/kcontainer-fleet-ms
+        IMAGE_NAME: osowski/kcontainer-fleet-ms
         IMAGE_TAG: ${{ steps.bump-version-action.outputs.new_tag }}
-    - name: Build the voyage-ms docker image
-      id: build-voyage-image
-      run: |
-        docker login -u ${DOCKER_U} -p ${DOCKER_P}
-        cd ${WORKDIR}
-        docker build . --file ${DOCKERFILE} --tag ${IMAGE_NAME}:${IMAGE_TAG}
-        docker tag ${IMAGE_NAME}:${IMAGE_TAG} ${IMAGE_NAME}:latest
-        docker push ${IMAGE_NAME}
-      env:
-        DOCKER_U: ${{ secrets.DOCKER_USERNAME }}
-        DOCKER_P: ${{ secrets.DOCKER_PASSWORD }}
-        WORKDIR: voyages-ms
-        DOCKERFILE: Dockerfile
-        IMAGE_NAME: ibmcase/kcontainer-voyages-ms
-        IMAGE_TAG: ${{ steps.bump-version-action.outputs.new_tag }}
-    - name: Cache newest tag
-      id: cache-build-tag
-      run: |
-        echo ${IMAGE_TAG} > latest_tag.txt
-      env:
-        IMAGE_TAG: ${{ steps.bump-version-action.outputs.new_tag }}
-    - name: Upload newest tag
-      uses: actions/upload-artifact@v1
+    #- name: Build the voyage-ms docker image
+    #  id: build-voyage-image
+    #  run: |
+    #    docker login -u ${DOCKER_U} -p ${DOCKER_P}
+    #    cd ${WORKDIR}
+    #    docker build . --file ${DOCKERFILE} --tag ${IMAGE_NAME}:${IMAGE_TAG}
+    #    docker tag ${IMAGE_NAME}:${IMAGE_TAG} ${IMAGE_NAME}:latest
+    #    docker push ${IMAGE_NAME}
+    #  env:
+    #    DOCKER_U: ${{ secrets.DOCKER_USERNAME }}
+    #    DOCKER_P: ${{ secrets.DOCKER_PASSWORD }}
+    #    WORKDIR: voyages-ms
+    #    DOCKERFILE: Dockerfile
+    #    IMAGE_NAME: ibmcase/kcontainer-voyages-ms
+    #    IMAGE_TAG: ${{ steps.bump-version-action.outputs.new_tag }}
+    - name: Webhook to GitOps repo
+      id: gitops-repo-webhook
+      uses: osowski/repository-dispatch@1.1.4,
       with:
-        name: cached-build-tag
-        path: latest_tag.txt
+        repo: 'ibm-cloud-architecture/refarch-kc-gitops'
+        token: ${{ secrets.GITHUB_TOKEN }}
+        user: ${{ github.actor}}
+        action: 'gitops-refresh'
