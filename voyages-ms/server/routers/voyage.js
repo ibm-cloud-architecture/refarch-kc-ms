@@ -6,7 +6,7 @@ var voyagesList = require('../../data/voyages.json');
 var kafka = require('../utils/kafka.js');
 var config = require('../utils/config.js');
 
-
+var myMap = new Map();
 
 module.exports = function(app) {
   var router = express.Router();
@@ -73,44 +73,63 @@ const cb = (message, reloading) => {
   console.log('Event received ' + JSON.stringify(event,null,2));
   if (event.type === 'OrderCreated') {
 
-    // For UI demo purpose, wait 30 secs before assigning this order to a voyage
-    var timeoutMs = reloading ? 0 : 30000;
+    console.log('OrderCreated event received and stored. Waiting for its ContainerAllocated event.');
+    myMap.set(event.payload.orderID, event);
+    // Uncomment for debugging
+    console.log(myMap);
 
-    setTimeout(function() {
-      var matchedVoyage = findSuitableVoyage(event.payload);
-      var assignOrCancelEvent;
-      if (matchedVoyage.voyageID) {
+  }
+  
+  if (event.type === 'ContainerAllocated') {
+    console.log('ContainerAllocated event for order: ' + event.payload.orderID + ' received. Searching for a voyage.');
+    if (myMap.get(event.payload.orderID) !== undefined){
+      var order = myMap.get(event.orderID)
+
+      // For UI demo purpose, wait 30 secs before assigning this order to a voyage
+      var timeoutMs = reloading ? 0 : 10000;
+
+      setTimeout(function() {
+        var matchedVoyage = findSuitableVoyage(order.payload);
+        var assignOrCancelEvent;
+        if (matchedVoyage.voyageID) {
+            assignOrCancelEvent = {
+            'timestamp':  Date.now(),
+            'type': 'VoyageAssigned',
+            'version': '1',
+            'payload': {
+              'voyageID': matchedVoyage.voyageID,
+              'orderID': order.payload.orderID
+            }
+          }
+          if (!myMap.delete(order.payload.orderID)){
+            console.log('[ERROR] -  An error occurred while deleting the orderID ' + order.payload.orderID + ' from the order in memory map');
+            console.log(myMap);
+          }
+        } else {
           assignOrCancelEvent = {
-          'timestamp':  Date.now(),
-          'type': 'VoyageAssigned',
-          'version': '1',
-          'payload': {
-            'voyageID': matchedVoyage.voyageID,
-            'orderID': event.payload.orderID
+            'timestamp':  Date.now(),
+            'type': 'VoyageNotFound',
+            'version': '1',
+            'payload': {
+              'reason': matchedVoyage.reason,
+              'orderID': order.payload.orderID
+            }
           }
         }
-      } else {
-        assignOrCancelEvent = {
-          'timestamp':  Date.now(),
-          'type': 'VoyageNotFound',
-          'version': '1',
-          'payload': {
-            'reason': matchedVoyage.reason,
-            'orderID': event.payload.orderID
-          }
+
+        if(!reloading) {
+          console.log('Emitting ' + assignOrCancelEvent.type);
+          kafka.emit(order.payload.orderID, assignOrCancelEvent).then (function(fulfilled) {
+            console.log('Emitted ' + JSON.stringify(assignOrCancelEvent));
+          }).catch(function(err){
+            console.log('Rejected' + err);
+          });
         }
-      }
+      }, timeoutMs)
 
-      if(!reloading) {
-        console.log('Emitting ' + assignOrCancelEvent.type);
-        kafka.emit(event.payload.orderID, assignOrCancelEvent).then (function(fulfilled) {
-          console.log('Emitted ' + JSON.stringify(assignOrCancelEvent));
-        }).catch(function(err){
-          console.log('Rejected' + err);
-        });
-      }
-    }, timeoutMs)
-
+    } else {
+      console.log('[ERROR] - We could not find the order for orderID: ' + event.orderID);
+    }
   }
 }
 
