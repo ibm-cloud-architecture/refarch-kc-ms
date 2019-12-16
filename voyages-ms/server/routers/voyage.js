@@ -90,9 +90,9 @@ const cb = (message, reloading) => {
 
       setTimeout(function() {
         var matchedVoyage = findSuitableVoyage(order.payload);
-        var assignOrCancelEvent;
+        var assignOrRejectEvent;
         if (matchedVoyage.voyageID) {
-            assignOrCancelEvent = {
+          assignOrRejectEvent = {
             'timestamp':  Date.now(),
             'type': 'VoyageAssigned',
             'version': '1',
@@ -106,7 +106,7 @@ const cb = (message, reloading) => {
             console.log(myMap);
           }
         } else {
-          assignOrCancelEvent = {
+          assignOrRejectEvent = {
             'timestamp':  Date.now(),
             'type': 'VoyageNotFound',
             'version': '1',
@@ -118,9 +118,9 @@ const cb = (message, reloading) => {
         }
 
         if(!reloading) {
-          console.log('Emitting ' + assignOrCancelEvent.type);
-          kafka.emit(order.payload.orderID, assignOrCancelEvent).then (function(fulfilled) {
-            console.log('Emitted ' + JSON.stringify(assignOrCancelEvent));
+          console.log('Emitting ' + assignOrRejectEvent.type);
+          kafka.emit(order.payload.orderID, assignOrRejectEvent).then (function(fulfilled) {
+            console.log('Emitted ' + JSON.stringify(assignOrRejectEvent));
           }).catch(function(err){
             console.log('Rejected' + err);
           });
