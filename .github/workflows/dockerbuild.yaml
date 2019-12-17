@@ -33,8 +33,8 @@ jobs:
         validate_secret DOCKER_USERNAME ${DOCKER_USERNAME}
         validate_secret DOCKER_PASSWORD ${DOCKER_PASSWORD}
         validate_secret DOCKER_REPOSITORY ${DOCKER_REPOSITORY}
-        validate_secret DOCKER_IMAGE_COMMAND ${DOCKER_IMAGE_COMMAND}
-        validate_secret DOCKER_IMAGE_QUERY ${DOCKER_IMAGE_QUERY}
+        validate_secret DOCKER_IMAGE_FLEET ${DOCKER_IMAGE_FLEET}
+        validate_secret DOCKER_IMAGE_VOYAGES ${DOCKER_IMAGE_VOYAGES}
 
         if [ "${FAIL}" = "true" ]; then
           exit 1
@@ -43,8 +43,8 @@ jobs:
         DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
         DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
         DOCKER_REPOSITORY: ${{ secrets.DOCKER_REPOSITORY }}
-        DOCKER_IMAGE_COMMAND: ${{ secrets.DOCKER_IMAGE_COMMAND }}
-        DOCKER_IMAGE_QUERY: ${{ secrets.DOCKER_IMAGE_QUERY }}
+        DOCKER_IMAGE_FLEET: ${{ secrets.DOCKER_IMAGE_FLEET }}
+        DOCKER_IMAGE_VOYAGES: ${{ secrets.DOCKER_IMAGE_VOYAGES }}
   build-docker-images:
     needs:
       validate-docker-secrets
