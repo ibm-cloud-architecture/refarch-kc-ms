@@ -1,4 +1,4 @@
-version: '2'
+version: '3.5'
 services:
   zookeeper:
     image: strimzi/kafka:0.17.0-kafka-2.4.0
@@ -10,8 +10,10 @@ services:
       - "2181:2181"
     environment:
       LOG_DIR: /tmp/logs
+    networks:
+      - kafka
 
-  kafka:
+  kafka1:
     image: strimzi/kafka:0.17.0-kafka-2.4.0
     command: [
       "sh", "-c",
@@ -25,6 +27,12 @@ services:
       - "9092"
     environment:
       LOG_DIR: "/tmp/logs"
-      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka1:9092
       KAFKA_LISTENERS: PLAINTEXT://0.0.0.0:9092
       KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+    networks: 
+      - kafka
+
+networks:
+  kafka:
+    name: appsody
