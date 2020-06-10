@@ -233,7 +233,14 @@ const listen = (subscription) => {
     console.log('Main Consumer starting consume loop');
 }
 
+const disconnect = () => {
+    console.log('Disconnecting Kafka clients');
+    consumer.disconnect();
+    producer.disconnect();
+}
+
 module.exports = {
     emit,
-    reload
+    reload,
+    disconnect
 };
