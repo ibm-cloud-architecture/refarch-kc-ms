@@ -34,8 +34,27 @@ metadata:
     stack.appsody.dev/version: 0.4.10
   name: voyages-ms
 spec:
-  applicationImage: djones6/voyages-ms:0.0.1
+  applicationImage: djones6/voyages-ms:0.1.26
   createKnativeService: false
+  env:
+  - name: PORT
+    value : "3000"
+  - name: KAFKA_BROKERS
+    valueFrom:
+      configMapKeyRef:
+        key: brokers
+        name: "kafka-brokers"
+  - name: ORDER_TOPIC
+    valueFrom:
+      configMapKeyRef:
+        key: ordersTopic
+        name: "kafka-topics"
+  - name: KAFKA_APIKEY
+    valueFrom:
+      secretKeyRef:
+        key: binding
+        name: "eventstreams-apikey"
+        optional: true
   expose: true
   livenessProbe:
     failureThreshold: 12
