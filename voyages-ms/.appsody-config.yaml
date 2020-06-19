@@ -1,3 +1,4 @@
+application-name: refarch-kc
 id: "20200605150119.32496770"
 project-name: voyages-ms
 stack: docker.io/appsody/nodejs-express:0.4
