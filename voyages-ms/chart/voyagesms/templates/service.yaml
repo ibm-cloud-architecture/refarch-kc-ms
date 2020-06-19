@@ -6,6 +6,7 @@ metadata:
   name: "voyages-ms"
   labels:
     chart: "{{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}"
+    app.kubernetes.io/part-of: refarch-kc
 spec:
   type: {{ .Values.service.type }}
   ports:
