@@ -1,0 +1,35 @@
+### Stage 1 - Java Build
+FROM ibmjava:8-sdk
+LABEL maintainer="IBM Cloud Architecture Solution Engineering at IBM Cloud"
+
+RUN apt-get update && \
+ apt-get install -y maven
+
+RUN mkdir -p /local/gitrepo
+WORKDIR /local/gitrepo
+COPY src/ /local/gitrepo/src
+COPY pom.xml /local/gitrepo/pom.xml
+
+RUN mvn install -DskipTests=true
+
+### Stage 2 - Docker Build
+FROM websphere-liberty:19.0.0.3-microProfile2
+LABEL maintainer="IBM Cloud Architecture Solution Engineering at IBM Cloud"
+
+USER root
+COPY --from=0 /local/gitrepo/target/liberty/wlp/usr/servers/defaultServer /config/
+
+USER 1001
+RUN installUtility install defaultServer openapi-3.0 --acceptLicense
+
+# Upgrade to production license if URL to JAR provided
+ARG LICENSE_JAR_URL
+RUN \
+  if [ $LICENSE_JAR_URL ]; then \
+    wget $LICENSE_JAR_URL -O /tmp/license.jar \
+    && java -jar /tmp/license.jar -acceptLicense /opt/ibm \
+    && rm /tmp/license.jar; \
+  fi
+
+# Fix permissions so random UID can write output
+RUN chmod -R ugo+rw /opt/ibm/wlp/output
