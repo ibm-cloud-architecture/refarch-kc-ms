@@ -57,13 +57,34 @@ metadata:
     version: 0.2.14
   creationTimestamp: null
   labels:
-    image.opencontainers.org/title: fleet-ms-app
+    image.opencontainers.org/title: fleet-ms
     stack.appsody.dev/id: java-openliberty
     stack.appsody.dev/version: 0.2.14
-  name: fleet-ms-app
+  name: fleet-ms
 spec:
-  applicationImage: dev.local/fleet-ms-app
+  applicationImage: dev.local/fleet-ms
   createKnativeService: false
+  env:
+  - name: KAFKA_BROKERS
+    valueFrom:
+      configMapKeyRef:
+        key: brokers
+        name: kafka-brokers
+  - name: KAFKA_SHIP_TOPIC_NAME
+    valueFrom:
+      configMapKeyRef:
+        key: bluewaterShipTopic
+        name: kafka-topics
+  - name: KAFKA_CONTAINER_TOPIC_NAME
+    valueFrom:
+      configMapKeyRef:
+        key: bluewaterContainerTopic
+        name: kafka-topics
+  - name: KAFKA_BW_PROBLEM_TOPIC_NAME
+    valueFrom:
+      configMapKeyRef:
+        key: bluewaterProblemTopic
+        name: kafka-topics
   expose: true
   livenessProbe:
     failureThreshold: 12
