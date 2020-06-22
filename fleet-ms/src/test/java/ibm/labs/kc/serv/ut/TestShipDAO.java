@@ -15,20 +15,24 @@ public class TestShipDAO {
 	public void validateThereIsNoShipYet() {
 		ShipDAO dao = new ShipDAOMockup();
 		Collection<Ship> f = dao.getAllShips();
+		f.clear();
 		Assert.assertNotNull(f);
 		Assert.assertTrue(f.size() == 0);
+
 	}
 
 	@Test
 	public void validateOneShipExist() {
 		ShipDAO dao = new ShipDAOMockup();
+		Collection<Ship> f = dao.getAllShips();
+		f.clear();
 		Ship s = new Ship("Silver Chamrock");
 		dao.save(s);
-		Collection<Ship> f = dao.getAllShips();
+		//System.out.println(f.toString());
 		Assert.assertNotNull(f);
 		Assert.assertTrue(f.size() == 1);
 	}
-	
+
 	@Test
 	public void validateGettingShipByName() {
 		ShipDAO dao = new ShipDAOMockup();
