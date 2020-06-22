@@ -2,7 +2,7 @@
 
 This microservice is responsible to manage fleet of container carrier ships. It supports the event, actors, and commands discovered during the event storming workshop and illustrated by the following figure for the "ship actor":
 
-![](https://github.com/ibm-cloud-architecture/refarch-kc/blob/master/analysis/ship-dom-cmd3.png)
+![](https://github.com/ibm-cloud-architecture/refarch-kc/blob/ca4bd17caf3a41c3de099be9d2adf7db5878023c/docs-gatsby/src/pages/analysis/ship-dom-cmd3.png)
 
 The service exposes simple REST API to support getting ships and fleets, and start and stop simulator to emulate ship movements and container metrics events generation. When a ship leaves or enters it will also generates the events as listed in the analysis.
 
