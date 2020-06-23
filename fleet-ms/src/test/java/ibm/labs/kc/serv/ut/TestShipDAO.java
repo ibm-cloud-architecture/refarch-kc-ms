@@ -14,8 +14,8 @@ public class TestShipDAO {
 	@Test
 	public void validateThereIsNoShipYet() {
 		ShipDAO dao = new ShipDAOMockup();
+		dao.removeAllShips();
 		Collection<Ship> f = dao.getAllShips();
-		f.clear();
 		Assert.assertNotNull(f);
 		Assert.assertTrue(f.size() == 0);
 
@@ -24,8 +24,8 @@ public class TestShipDAO {
 	@Test
 	public void validateOneShipExist() {
 		ShipDAO dao = new ShipDAOMockup();
+		dao.removeAllShips();
 		Collection<Ship> f = dao.getAllShips();
-		f.clear();
 		Ship s = new Ship("Silver Chamrock");
 		dao.save(s);
 		//System.out.println(f.toString());
