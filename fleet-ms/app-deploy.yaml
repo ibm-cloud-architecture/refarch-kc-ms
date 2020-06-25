@@ -8,8 +8,8 @@ metadata:
     commit.image.appsody.dev/author: josiemundi <johannasaladas@gmail.com>
     commit.image.appsody.dev/committer: josiemundi <johannasaladas@gmail.com>
     commit.image.appsody.dev/contextDir: /fleet-ms
-    commit.image.appsody.dev/date: Mon Jun 22 13:56:03 2020 +0000
-    commit.image.appsody.dev/message: rename fleet-ms
+    commit.image.appsody.dev/date: Tue Jun 23 11:54:26 2020 +0000
+    commit.image.appsody.dev/message: fix unit tests
     commit.stack.appsody.dev/contextDir: /incubator/java-openliberty
     commit.stack.appsody.dev/date: Thu Jun 4 13:29:00 2020 +0100
     commit.stack.appsody.dev/message: 'java-openliberty: define APPSODY_DEBUG_PORT
@@ -17,9 +17,9 @@ metadata:
     description: Eclipse MicroProfile & Jakarta EE on Open Liberty & OpenJ9 using
       Maven
     distribution-scope: public
-    image.opencontainers.org/created: "2020-06-22T15:47:32Z"
+    image.opencontainers.org/created: "2020-06-25T13:37:07Z"
     image.opencontainers.org/documentation: https://github.com/josiemundi/refarch-kc-ms
-    image.opencontainers.org/revision: c7c3599958e3eec8266f42e35e5ec615ef5cc635-modified
+    image.opencontainers.org/revision: c906cf18a704d47689c8844cc9b0c087b7b1df9e-modified
     image.opencontainers.org/source: https://github.com/josiemundi/refarch-kc-ms/tree/fleet-ms-appsody
     image.opencontainers.org/url: https://github.com/josiemundi/refarch-kc-ms
     k8s.io/description: The Universal Base Image is designed and engineered to be
@@ -62,7 +62,7 @@ metadata:
     stack.appsody.dev/version: 0.2.14
   name: fleet-ms
 spec:
-  applicationImage: dev.local/fleet-ms
+  applicationImage: josiemundi/fleet-ms
   createKnativeService: false
   env:
   - name: KAFKA_BROKERS
