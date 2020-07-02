@@ -187,6 +187,20 @@
               </execution>
             </executions>
           </plugin>
+  <!-- Enable liberty-maven plugin -->
+            <plugin>
+                <groupId>io.openliberty.tools</groupId>
+                <artifactId>liberty-maven-plugin</artifactId>
+                <configuration>
+                    <stripVersion>true</stripVersion>
+                    <serverStartTimeout>120</serverStartTimeout>
+                    <bootstrapProperties>
+                      <default.http.port>${testServerHttpPort}</default.http.port>
+                      <default.https.port>${testServerHttpsPort}</default.https.port>
+                      <app.location>${project.artifactId}-${project.version}.war</app.location>
+                    </bootstrapProperties>
+                </configuration>
+            </plugin>
           <!-- Plugin to run functional tests -->
           <plugin>
             <groupId>org.apache.maven.plugins</groupId>

@@ -8,7 +8,7 @@
       <feature>managedBeans-1.0</feature>
       <feature>websocket-1.1</feature>
       <feature>jaxrs-2.0</feature>
-      <feature>openapi-3.0</feature>
+      <!-- <feature>openapi-3.0</feature> -->
       <feature>restConnector-2.0</feature>
   </featureManager>
 
@@ -25,6 +25,6 @@
   <!-- Automatically expand WAR files and EAR files -->
   <applicationManager autoExpand="true"/>
 
-  <webApplication name="fleetms" location="${app.location}"/>
+  <webApplication name="fleetms" location="fleetms.war"/>
 
 </server>
