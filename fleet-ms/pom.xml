@@ -232,7 +232,7 @@
             </executions>
             <configuration>
               <environmentVariables>
-                <KAFKA_BROKERS>localhost:9092</KAFKA_BROKERS>
+                <KAFKA_BROKERS>kafka:9092</KAFKA_BROKERS>
               </environmentVariables>
               <summaryFile>${project.build.directory}/test-reports/it/failsafe-summary.xml</summaryFile>
               <reportsDirectory>${project.build.directory}/test-reports/it</reportsDirectory>
