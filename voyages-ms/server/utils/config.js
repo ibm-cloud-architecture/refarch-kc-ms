@@ -7,7 +7,7 @@ module.exports = {
     },
 
     getOrderTopicName: function() {
-        return process.env.ORDER_TOPIC || config.orderTopicName;
+        return process.env.KCSOLUTION_ORDERS_TOPIC || config.orderTopicName;
     },
 
     getKafkaApiKey: function() {

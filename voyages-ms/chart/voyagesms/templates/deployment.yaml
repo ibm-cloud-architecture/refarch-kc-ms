@@ -53,7 +53,7 @@ spec:
               configMapKeyRef:
                 name: "{{ .Values.kafka.brokersConfigMap }}"
                 key: brokers
-          - name: ORDER_TOPIC
+          - name: KCSOLUTION_ORDERS_TOPIC
             valueFrom:
               configMapKeyRef:
                 name: "{{ .Values.kafka.topicsConfigMap }}"
