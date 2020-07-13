@@ -3,9 +3,10 @@ kind: Service
 metadata:
   annotations:
     prometheus.io/scrape: 'true'
-  name: "{{  .Chart.Name }}-service"
+  name: "voyages-ms"
   labels:
     chart: "{{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}"
+    app.kubernetes.io/part-of: refarch-kc
 spec:
   type: {{ .Values.service.type }}
   ports:
