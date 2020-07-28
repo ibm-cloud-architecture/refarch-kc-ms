@@ -5,29 +5,29 @@ metadata:
     commit.image.appsody.dev/author: Jesus Almaraz <almarazj@ie.ibm.com>
     commit.image.appsody.dev/committer: GitHub <noreply@github.com>
     commit.image.appsody.dev/contextDir: C:\dev\refarch\refarch-kc-ms\voyages-ms
-    commit.image.appsody.dev/date: Fri Jun 19 15:57:16 2020 +0100
-    commit.image.appsody.dev/message: Update Helm chart with Appsody naming and part-of
-      labels
+    commit.image.appsody.dev/date: Tue Jul 28 14:06:26 2020 +0100
+    commit.image.appsody.dev/message: Remove KAFKA_APIKEY from base app-deploy.yaml
     commit.stack.appsody.dev/contextDir: /incubator/nodejs-express
-    commit.stack.appsody.dev/date: Wed Jun 10 15:34:28 2020 +0100
-    commit.stack.appsody.dev/message: 'meta: Replace the maintainer info for node
-      express stacks (#829)'
-    image.opencontainers.org/created: "2020-06-19T16:12:57+01:00"
+    commit.stack.appsody.dev/date: Wed Jul 1 16:05:26 2020 +0100
+    commit.stack.appsody.dev/message: 'nodejs-express: Install ca-certificates when
+      building production image (#838)'
+    image.opencontainers.org/created: "2020-07-28T14:11:19+01:00"
     image.opencontainers.org/documentation: https://github.com/djones6/refarch-kc-ms
-    image.opencontainers.org/revision: c5d07b3c46b576e6d02ed693ec49e4d3df77e069
-    image.opencontainers.org/source: |
-      https://github.com/djones6/refarch-kc-ms/tree/update-helm
+    image.opencontainers.org/revision: 0fbbf80392ec606d49940396e54119143767fb44
+    image.opencontainers.org/source: |-
+      https://github.com/djones6/refarch-kc-ms/tree/remove-apikey
+      ??
     image.opencontainers.org/url: https://github.com/djones6/refarch-kc-ms
     stack.appsody.dev/authors: Gireesh Punathil <gireeshpunathil>
     stack.appsody.dev/configured: docker.io/appsody/nodejs-express:0.4
-    stack.appsody.dev/created: "2020-06-10T14:37:32Z"
+    stack.appsody.dev/created: "2020-07-01T15:09:37Z"
     stack.appsody.dev/description: Express web framework for Node.js
-    stack.appsody.dev/digest: sha256:10ef27f63ce277b69666f8a12723d223edc625492cdf95df96232ebbccaab3bb
+    stack.appsody.dev/digest: sha256:4d62493bcc83c45665f6fc25959ba7fdc737876851796f81a110dd123bf739b0
     stack.appsody.dev/documentation: https://github.com/appsody/stacks/tree/master/incubator/nodejs-express/README.md
     stack.appsody.dev/licenses: Apache-2.0
-    stack.appsody.dev/revision: 41e6af7f5aa970da76cd1b2b10b17ee088d43cb4
+    stack.appsody.dev/revision: 06ea2933df2b6f831fef31ddcbe24c7e0135170c
     stack.appsody.dev/source: https://github.com/appsody/stacks/tree/master/incubator/nodejs-express/image
-    stack.appsody.dev/tag: docker.io/appsody/nodejs-express:0.4.11
+    stack.appsody.dev/tag: docker.io/appsody/nodejs-express:0.4.13
     stack.appsody.dev/title: Node.js Express
     stack.appsody.dev/url: https://github.com/appsody/stacks/tree/master/incubator/nodejs-express
   creationTimestamp: null
@@ -35,10 +35,10 @@ metadata:
     app.kubernetes.io/part-of: refarch-kc
     image.opencontainers.org/title: voyages-ms
     stack.appsody.dev/id: nodejs-express
-    stack.appsody.dev/version: 0.4.11
+    stack.appsody.dev/version: 0.4.13
   name: voyages-ms
 spec:
-  applicationImage: ibmcase/kcontainer-voyages-ms:0.1.27
+  applicationImage: ibmcase/kcontainer-voyages-ms:latest
   createKnativeService: false
   env:
   - name: PORT
@@ -53,12 +53,6 @@ spec:
       configMapKeyRef:
         key: ordersTopic
         name: kafka-topics
-  - name: KAFKA_APIKEY
-    valueFrom:
-      secretKeyRef:
-        key: binding
-        name: eventstreams-apikey
-        optional: true
   expose: true
   livenessProbe:
     failureThreshold: 12
