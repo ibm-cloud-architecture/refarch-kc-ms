@@ -10,8 +10,12 @@ module.exports = {
         return process.env.KCSOLUTION_ORDERS_TOPIC || config.orderTopicName;
     },
 
-    getKafkaApiKey: function() {
-        return process.env.KAFKA_APIKEY || config.kafkaApiKey;
+    getKafkaPassword: function() {
+        return process.env.KAFKA_PASSWORD || config.kafkaPassword;
+    },
+
+    getKafkaUser: function() {
+        return process.env.KAFKA_USER || config.kafkaUser;
     },
 
     getCertsPath: function() {
@@ -23,7 +27,7 @@ module.exports = {
     },
 
     isEventStreams: function() {
-       return ('KAFKA_APIKEY' in process.env && process.env.KAFKA_APIKEY.trim());
+       return ('KAFKA_PASSWORD' in process.env && process.env.KAFKA_PASSWORD.trim());
     },
 
     areEventStreamsCertificatesRequired: function() {

@@ -2,21 +2,21 @@ apiVersion: appsody.dev/v1beta1
 kind: AppsodyApplication
 metadata:
   annotations:
-    commit.image.appsody.dev/author: Rick O <rosowski@gmail.com>
+    commit.image.appsody.dev/author: josiemundi <johannasaladas@gmail.com>
     commit.image.appsody.dev/committer: GitHub <noreply@github.com>
-    commit.image.appsody.dev/contextDir: /voyages-ms
-    commit.image.appsody.dev/date: Tue Jul 28 14:06:26 2020 +0100
-    commit.image.appsody.dev/message: Remove KAFKA_APIKEY from base app-deploy.yaml
+    commit.image.appsody.dev/contextDir: /Users/jesusalmaraz/Workspace/Github/jesusmah/EDA/refarch-kc-ms/voyages-ms
+    commit.image.appsody.dev/date: Mon Aug 3 09:24:06 2020 -0500
+    commit.image.appsody.dev/message: Amend pom.xml to specify final name of .war
+      file for Fleet microservice build (#61)
     commit.stack.appsody.dev/contextDir: /incubator/nodejs-express
     commit.stack.appsody.dev/date: Wed Jul 1 16:05:26 2020 +0100
     commit.stack.appsody.dev/message: 'nodejs-express: Install ca-certificates when
       building production image (#838)'
-    image.opencontainers.org/created: "2020-07-28T14:11:19+01:00"
-    image.opencontainers.org/documentation: https://github.com/djones6/refarch-kc-ms
-    image.opencontainers.org/revision: 0fbbf80392ec606d49940396e54119143767fb44
-    image.opencontainers.org/source: |-
-      https://github.com/djones6/refarch-kc-ms/tree/remove-apikey
-    image.opencontainers.org/url: https://github.com/djones6/refarch-kc-ms
+    image.opencontainers.org/created: "2020-08-07T14:12:06+02:00"
+    image.opencontainers.org/documentation: https://github.com/jesusmah/refarch-kc-ms
+    image.opencontainers.org/revision: a0503a875ab148ddd263975bbf1964dd11ee8978-modified
+    image.opencontainers.org/source: https://github.com/jesusmah/refarch-kc-ms/tree/master
+    image.opencontainers.org/url: https://github.com/jesusmah/refarch-kc-ms
     stack.appsody.dev/authors: Gireesh Punathil <gireeshpunathil>
     stack.appsody.dev/configured: docker.io/appsody/nodejs-express:0.4
     stack.appsody.dev/created: "2020-07-01T15:09:37Z"

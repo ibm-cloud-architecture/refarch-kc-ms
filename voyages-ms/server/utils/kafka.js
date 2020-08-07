@@ -7,10 +7,17 @@ const committedTimeoutMs = 10000;
 const getCloudConfig = () => {
     var _config = {
         'security.protocol': 'sasl_ssl',
-        'sasl.mechanisms': 'PLAIN',
-        'sasl.username': 'token',
-        'sasl.password': config.getKafkaApiKey()
+        'sasl.username': config.getKafkaUser(),
+        'sasl.password': config.getKafkaPassword()
     };
+    // If we are connecting to ES on IBM Cloud, the SASL mechanism is plain
+    if(_config['sasl.username'] === 'token'){
+        _config['sasl.mechanisms'] = 'PLAIN'
+    }
+    // If we are connecting to ES on OCP, the SASL mechanism is scram-sha-512
+    else {
+        _config['sasl.mechanisms'] = 'SCRAM-SHA-512'
+    }
 
     if(config.areEventStreamsCertificatesRequired()){
       _config['ssl.ca.location'] = config.getCertsPath();

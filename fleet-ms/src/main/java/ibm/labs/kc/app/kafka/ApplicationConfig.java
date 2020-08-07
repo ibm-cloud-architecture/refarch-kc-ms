@@ -32,9 +32,6 @@ public class ApplicationConfig {
 	public static final String KAFKA_PRODUCER_CLIENTID = "kafka.producer.clientid";
 	public static final String KAFKA_ACK = "kafka.ack";
 	public static final String KAFKA_RETRIES = "kafka.retries";
-	public static final String KAFKA_USER = "kafka.user";
-	public static final String KAFKA_PWD = "kafka.password";
-	public static final String KAFKA_APIKEY = "kafka.api_key";
 	public static final String KAFKA_POLL_DURATION = "kafka.poll.duration";
 	public static final String VERSION = "version";
 
@@ -145,19 +142,24 @@ public class ApplicationConfig {
 		if (env.get("KAFKA_BROKERS") != null) {
 			getProperties().setProperty(ApplicationConfig.KAFKA_BOOTSTRAP_SERVERS,env.get("KAFKA_BROKERS"));
 		}
-		getProperties().put(CommonClientConfigs.BOOTSTRAP_SERVERS_CONFIG,
-	        		getProperties().getProperty(ApplicationConfig.KAFKA_BOOTSTRAP_SERVERS));
+		getProperties().put(CommonClientConfigs.BOOTSTRAP_SERVERS_CONFIG, getProperties().getProperty(ApplicationConfig.KAFKA_BOOTSTRAP_SERVERS));
 
-		if (env.get("KAFKA_APIKEY") != null && !env.get("KAFKA_APIKEY").isEmpty()) {
-			getProperties().setProperty(ApplicationConfig.KAFKA_APIKEY, env.get("KAFKA_APIKEY"));
+		if (env.get("KAFKA_USER") != null && !env.get("KAFKA_USER").isEmpty() && env.get("KAFKA_PASSWORD") != null && !env.get("KAFKA_PASSWORD").isEmpty()) {
 
 			getProperties().put(CommonClientConfigs.SECURITY_PROTOCOL_CONFIG, "SASL_SSL");
-			getProperties().put(SaslConfigs.SASL_MECHANISM, "PLAIN");
-			getProperties().put(SaslConfigs.SASL_JAAS_CONFIG, "org.apache.kafka.common.security.plain.PlainLoginModule required username=\"token\" password=\""
-               + getProperties().getProperty(ApplicationConfig.KAFKA_APIKEY)+ "\";");
 			getProperties().put(SslConfigs.SSL_PROTOCOL_CONFIG, "TLSv1.2");
 			getProperties().put(SslConfigs.SSL_ENABLED_PROTOCOLS_CONFIG, "TLSv1.2");
 			getProperties().put(SslConfigs.SSL_ENDPOINT_IDENTIFICATION_ALGORITHM_CONFIG, "HTTPS");
+			// If we are connecting to ES on IBM Cloud, the SASL mechanism is plain
+			if ("token".equals(env.get("KAFKA_USER"))) {
+				properties.put(SaslConfigs.SASL_MECHANISM, "PLAIN");
+				properties.put(SaslConfigs.SASL_JAAS_CONFIG,"org.apache.kafka.common.security.plain.PlainLoginModule required username=\"" + env.get("KAFKA_USER") + "\" password=\"" + env.get("KAFKA_PASSWORD") + "\";");
+			}
+			// If we are connecting to ES on OCP, the SASL mechanism is scram-sha-512
+			else {
+				properties.put(SaslConfigs.SASL_MECHANISM, "SCRAM-SHA-512");
+				properties.put(SaslConfigs.SASL_JAAS_CONFIG,"org.apache.kafka.common.security.scram.ScramLoginModule required username=\"" + env.get("KAFKA_USER") + "\" password=\"" + env.get("KAFKA_PASSWORD") + "\";");
+			}
 
 			if ("true".equals(env.get("TRUSTSTORE_ENABLED"))){
 				getProperties().put(SslConfigs.SSL_TRUSTSTORE_LOCATION_CONFIG, env.get("TRUSTSTORE_PATH"));
@@ -165,7 +167,8 @@ public class ApplicationConfig {
 			}
 		}
 
-		System.out.println("Brokers " + getProperties().getProperty(ApplicationConfig.KAFKA_BOOTSTRAP_SERVERS));
-		logger.info("apikey " + getProperties().getProperty(ApplicationConfig.KAFKA_APIKEY));
+		System.out.println("Kafka Brokers: " + getProperties().getProperty(ApplicationConfig.KAFKA_BOOTSTRAP_SERVERS));
+		logger.info("Kafka User: " + env.get("KAFKA_USER"));
+		logger.info("Kafka Password: " + env.get("KAFKA_PASSWORD"));
 	}
 }
