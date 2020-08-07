@@ -13,5 +13,6 @@ public interface ShipDAO {
 	public Collection<Ship> getAllShips();
 
 	public Ship loadContainersForTheShip(Ship s);
+	public void removeAllShips();
 
 }

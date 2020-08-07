@@ -30,6 +30,11 @@ public class ShipDAOMockup implements ShipDAO {
 	}
 
 	@Override
+	public void removeAllShips() {
+		ships.clear();
+	}
+
+	@Override
 	public Ship loadContainersForTheShip(Ship s) {
 		int row = 0 , column = 0;
 		s.setContainers(null);
