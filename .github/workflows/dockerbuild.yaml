@@ -137,45 +137,55 @@ jobs:
       build-docker-images
     runs-on: ubuntu-latest
     steps:
+    - name: Configure git client
+      id: configure-git
+      run: |
+        git config --global user.email "${GITOPS_EMAIL}"
+        git config --global user.name "GitOps Update"
+        git config --global credential.https://github.com.username "None"
+        git config --global credential.helper '!f() { echo "password=${GITOPS_TOKEN}"; }; f'
+      env:
+        GITOPS_EMAIL: ${{ secrets.GITOPS_EMAIL }}
+        GITOPS_TOKEN: ${{ secrets.GITOPS_TOKEN }}
     - name: Retrieve fleet-ms app-deploy.yaml
       uses: actions/download-artifact@v2
       with:
         name: fleetms-app-deploy.yaml
         path: fleetms
+    - name: Update fleet-ms app-deploy.yaml in GitOps repo
+      id: update-fleet-gitops
+      run: |
+        git clone --depth 1 https://github.com/$GITHUB_ORG/$GITOPS_REPO_NAME.git ./gitops
+        for environment in $(ls -1 --indicator-style=none gitops/environments)
+        do
+          cp ${SERVICE_NAME}/app-deploy.yaml gitops/environments/${environment}/services/${SERVICE_NAME}/base/config/app-deploy.yaml
+        done
+        pushd gitops
+        git commit environments/ -m "Update app-deploy.yaml for ${SERVICE_NAME}"
+        git push
+        popd && rm -rf gitops
+      env:
+        GITHUB_ORG: djones6
+        GITOPS_REPO_NAME: refarch-kc-gitops
+        SERVICE_NAME: fleetms
     - name: Retrieve voyages-ms app-deploy.yaml
       uses: actions/download-artifact@v2
       with:
         name: voyagesms-app-deploy.yaml
         path: voyagesms
-    - name: Update fleet-ms app-deploy.yaml in GitOps repo
-      id: update-fleet-gitops
-      run: |
-        git clone --depth 1 https://$GITOPS_TOKEN@github.com/$GITHUB_ORG/$GITOPS_REPO_NAME.git ./gitops
-        for environment in $(ls -1 --indicator-style=none gitops/environments)
-        do
-          cp ${SERVICE_NAME}/app-deploy.yaml gitops/environments/${environment}/services/${SERVICE_NAME}/base/config/app-deploy.yaml
-        done
-        cd gitops
-        git commit environments/ -m "Update app-deploy.yaml for ${SERVICE_NAME}"
-        git push
-      env:
-        GITHUB_ORG: djones6
-        GITOPS_REPO_NAME: refarch-kc-gitops
-        GITOPS_TOKEN: ${{ secrets.GITOPS_TOKEN }}
-        SERVICE_NAME: fleetms
     - name: Update voyages-ms app-deploy.yaml in GitOps repo
       id: update-voyages-gitops
       run: |
-        git clone --depth 1 https://$GITOPS_TOKEN@github.com/$GITHUB_ORG/$GITOPS_REPO_NAME.git ./gitops
+        git clone --depth 1 https://github.com/$GITHUB_ORG/$GITOPS_REPO_NAME.git ./gitops
         for environment in $(ls -1 --indicator-style=none gitops/environments)
         do
           cp ${SERVICE_NAME}/app-deploy.yaml gitops/environments/${environment}/services/${SERVICE_NAME}/base/config/app-deploy.yaml
         done
-        cd gitops
+        pushd gitops
         git commit environments/ -m "Update app-deploy.yaml for ${SERVICE_NAME}"
         git push
+        popd && rm -rf gitops
       env:
         GITHUB_ORG: djones6
         GITOPS_REPO_NAME: refarch-kc-gitops
-        GITOPS_TOKEN: ${{ secrets.GITOPS_TOKEN }}
         SERVICE_NAME: voyagesms
