@@ -62,7 +62,7 @@ jobs:
       run: |
         IMAGE_NAME="${DOCKER_R}/${DOCKER_I}"
         docker login -u ${DOCKER_U} -p ${DOCKER_P}
-        
+
         echo "Installing Appsody..."
         APPSODY_RELEASE=$(curl -s https://api.github.com/repos/appsody/appsody/releases/latest \
         | grep "browser_download_url.*deb" \
@@ -71,7 +71,7 @@ jobs:
         echo "Latest Appsody Release found: ${APPSODY_RELEASE}"
         wget ${APPSODY_RELEASE}
         sudo apt install -f ./appsody_*_amd64.deb
-        
+
         echo "Build and push the docker image"
         cd ${WORKDIR}
         appsody build -v --tag ${IMAGE_NAME}:${IMAGE_TAG} --push
@@ -85,6 +85,11 @@ jobs:
         WORKDIR: fleet-ms
         DOCKERFILE: Dockerfile.multistage
         IMAGE_TAG: ${{ steps.bump-version-action.outputs.new_tag }}
+    - name: Save fleet-ms app-deploy.yaml
+      uses: actions/upload-artifact@v2
+      with:
+        name: fleetms-app-deploy.yaml
+        path: fleet-ms/app-deploy.yaml
     - name: Build the voyages-ms docker image
       id: build-voyages-image
       run: |
@@ -113,6 +118,11 @@ jobs:
         WORKDIR: voyages-ms
         DOCKERFILE: Dockerfile
         IMAGE_TAG: ${{ steps.bump-version-action.outputs.new_tag }}
+    - name: Save voyages-ms app-deploy.yaml
+      uses: actions/upload-artifact@v2
+      with:
+        name: voyagesms-app-deploy.yaml
+        path: voyages-ms/app-deploy.yaml
     - name: Webhook to GitOps repo
       id: gitops-repo-webhook
       uses: osowski/repository-dispatch@v1
@@ -122,3 +132,50 @@ jobs:
         repository: ibm-cloud-architecture/refarch-kc-gitops
         event-type: gitops-refresh
         client-payload: '{"ref": "${{ github.ref }}", "sha": "${{ github.sha }}", "source": "${{ github.repository }}"}'
+  update-gitops:
+    needs:
+      build-docker-images
+    runs-on: ubuntu-latest
+    steps:
+    - name: Retrieve fleet-ms app-deploy.yaml
+      uses: actions/download-artifact@v2
+      with:
+        name: fleetms-app-deploy.yaml
+        path: fleetms
+    - name: Retrieve voyages-ms app-deploy.yaml
+      uses: actions/download-artifact@v2
+      with:
+        name: voyagesms-app-deploy.yaml
+        path: voyagesms
+    - name: Update fleet-ms app-deploy.yaml in GitOps repo
+      id: update-fleet-gitops
+      run: |
+        git clone --depth 1 https://$GITOPS_TOKEN@github.com/$GITHUB_ORG/$GITOPS_REPO_NAME.git ./gitops
+        for environment in $(ls -1 --indicator-style=none gitops/environments)
+        do
+          cp ${SERVICE_NAME}/app-deploy.yaml gitops/environments/${environment}/services/${SERVICE_NAME}/base/config/app-deploy.yaml
+        done
+        cd gitops
+        git commit environments/ -m "Update app-deploy.yaml for ${SERVICE_NAME}"
+        git push
+      env:
+        GITHUB_ORG: djones6
+        GITOPS_REPO_NAME: refarch-kc-gitops
+        GITOPS_TOKEN: ${{ secrets.GITOPS_TOKEN }}
+        SERVICE_NAME: fleetms
+    - name: Update voyages-ms app-deploy.yaml in GitOps repo
+      id: update-voyages-gitops
+      run: |
+        git clone --depth 1 https://$GITOPS_TOKEN@github.com/$GITHUB_ORG/$GITOPS_REPO_NAME.git ./gitops
+        for environment in $(ls -1 --indicator-style=none gitops/environments)
+        do
+          cp ${SERVICE_NAME}/app-deploy.yaml gitops/environments/${environment}/services/${SERVICE_NAME}/base/config/app-deploy.yaml
+        done
+        cd gitops
+        git commit environments/ -m "Update app-deploy.yaml for ${SERVICE_NAME}"
+        git push
+      env:
+        GITHUB_ORG: djones6
+        GITOPS_REPO_NAME: refarch-kc-gitops
+        GITOPS_TOKEN: ${{ secrets.GITOPS_TOKEN }}
+        SERVICE_NAME: voyagesms
