@@ -154,20 +154,11 @@ jobs:
         path: fleetms
     - name: Update fleet-ms app-deploy.yaml in GitOps repo
       id: update-fleet-gitops
-      run: |
-        git clone --depth 1 https://github.com/$GITHUB_ORG/$GITOPS_REPO_NAME.git ./gitops
-        for environment in $(ls -1 --indicator-style=none gitops/environments)
-        do
-          cp ${SERVICE_NAME}/app-deploy.yaml gitops/environments/${environment}/services/${SERVICE_NAME}/base/config/app-deploy.yaml
-        done
-        pushd gitops
-        git commit environments/ -m "Update app-deploy.yaml for ${SERVICE_NAME}"
-        git push
-        popd && rm -rf gitops
-      env:
-        GITHUB_ORG: djones6
-        GITOPS_REPO_NAME: refarch-kc-gitops
-        SERVICE_NAME: fleetms
+      uses: djones6/appsody-gitops-update-action@master
+      with:
+        service-name: fleetms
+        github-org: djones6
+        gitops-repo-name: refarch-kc-gitops
     - name: Retrieve voyages-ms app-deploy.yaml
       uses: actions/download-artifact@v2
       with:
@@ -175,17 +166,8 @@ jobs:
         path: voyagesms
     - name: Update voyages-ms app-deploy.yaml in GitOps repo
       id: update-voyages-gitops
-      run: |
-        git clone --depth 1 https://github.com/$GITHUB_ORG/$GITOPS_REPO_NAME.git ./gitops
-        for environment in $(ls -1 --indicator-style=none gitops/environments)
-        do
-          cp ${SERVICE_NAME}/app-deploy.yaml gitops/environments/${environment}/services/${SERVICE_NAME}/base/config/app-deploy.yaml
-        done
-        pushd gitops
-        git commit environments/ -m "Update app-deploy.yaml for ${SERVICE_NAME}"
-        git push
-        popd && rm -rf gitops
-      env:
-        GITHUB_ORG: djones6
-        GITOPS_REPO_NAME: refarch-kc-gitops
-        SERVICE_NAME: voyagesms
+      uses: djones6/appsody-gitops-update-action@master
+      with:
+        service-name: voyagesms
+        github-org: djones6
+        gitops-repo-name: refarch-kc-gitops
