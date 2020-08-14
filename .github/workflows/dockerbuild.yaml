@@ -57,20 +57,14 @@ jobs:
       env:
         DEFAULT_BUMP: patch
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    - name: Install Appsody CLI
+      id: install-appsody-cli
+      uses: djones6/appsody-install-action@master
     - name: Build the fleet-ms docker image
       id: build-fleet-image
       run: |
         IMAGE_NAME="${DOCKER_R}/${DOCKER_I}"
         docker login -u ${DOCKER_U} -p ${DOCKER_P}
-
-        echo "Installing Appsody..."
-        APPSODY_RELEASE=$(curl -s https://api.github.com/repos/appsody/appsody/releases/latest \
-        | grep "browser_download_url.*deb" \
-        | cut -d : -f 2,3 \
-        | tr -d \")
-        echo "Latest Appsody Release found: ${APPSODY_RELEASE}"
-        wget ${APPSODY_RELEASE}
-        sudo apt install -f ./appsody_*_amd64.deb
 
         echo "Build and push the docker image"
         cd ${WORKDIR}
@@ -95,15 +89,6 @@ jobs:
       run: |
         IMAGE_NAME="${DOCKER_R}/${DOCKER_I}"
         docker login -u ${DOCKER_U} -p ${DOCKER_P}
-
-        echo "Installing Appsody..."
-        APPSODY_RELEASE=$(curl -s https://api.github.com/repos/appsody/appsody/releases/latest \
-        | grep "browser_download_url.*deb" \
-        | cut -d : -f 2,3 \
-        | tr -d \")
-        echo "Latest Appsody Release found: ${APPSODY_RELEASE}"
-        wget ${APPSODY_RELEASE}
-        sudo apt install -f ./appsody_*_amd64.deb
 
         echo "Build and push the docker image"
         cd ${WORKDIR}
