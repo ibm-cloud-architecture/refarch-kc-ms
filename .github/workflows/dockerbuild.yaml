@@ -35,6 +35,8 @@ jobs:
         validate_secret DOCKER_REPOSITORY ${DOCKER_REPOSITORY}
         validate_secret DOCKER_IMAGE_FLEET ${DOCKER_IMAGE_FLEET}
         validate_secret DOCKER_IMAGE_VOYAGES ${DOCKER_IMAGE_VOYAGES}
+        validate_secret GITOPS_EMAIL ${GITOPS_EMAIL}
+        validate_secret GITOPS_TOKEN ${GITOPS_TOKEN}
 
         if [ "${FAIL}" = "true" ]; then
           exit 1
@@ -45,6 +47,9 @@ jobs:
         DOCKER_REPOSITORY: ${{ secrets.DOCKER_REPOSITORY }}
         DOCKER_IMAGE_FLEET: ${{ secrets.DOCKER_IMAGE_FLEET }}
         DOCKER_IMAGE_VOYAGES: ${{ secrets.DOCKER_IMAGE_VOYAGES }}
+        GITOPS_EMAIL: ${{ secrets.GITOPS_EMAIL }}
+        GITOPS_TOKEN: ${{ secrets.GITOPS_TOKEN }}
+
   build-docker-images:
     needs:
       validate-docker-secrets
@@ -117,6 +122,7 @@ jobs:
         repository: ibm-cloud-architecture/refarch-kc-gitops
         event-type: gitops-refresh
         client-payload: '{"ref": "${{ github.ref }}", "sha": "${{ github.sha }}", "source": "${{ github.repository }}"}'
+
   update-gitops:
     needs:
       build-docker-images
