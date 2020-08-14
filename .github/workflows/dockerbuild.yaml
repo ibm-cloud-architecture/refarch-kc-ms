@@ -144,7 +144,7 @@ jobs:
       uses: djones6/appsody-gitops-update-action@master
       with:
         service-name: fleetms
-        github-org: djones6
+        github-org: ibm-cloud-architecture
         gitops-repo-name: refarch-kc-gitops
     - name: Retrieve voyages-ms app-deploy.yaml
       uses: actions/download-artifact@v2
@@ -156,5 +156,5 @@ jobs:
       uses: djones6/appsody-gitops-update-action@master
       with:
         service-name: voyagesms
-        github-org: djones6
+        github-org: ibm-cloud-architecture
         gitops-repo-name: refarch-kc-gitops
