@@ -139,14 +139,10 @@ jobs:
     steps:
     - name: Configure git client
       id: configure-git
-      run: |
-        git config --global user.email "${GITOPS_EMAIL}"
-        git config --global user.name "GitOps Update"
-        git config --global credential.https://github.com.username "None"
-        git config --global credential.helper "!f() { echo \"password=${GITOPS_TOKEN}\"; }; f"
-      env:
-        GITOPS_EMAIL: ${{ secrets.GITOPS_EMAIL }}
-        GITOPS_TOKEN: ${{ secrets.GITOPS_TOKEN }}
+      uses: djones6/git-config-action@master
+      with:
+        user-email: ${{ secrets.GITOPS_EMAIL }}
+        gitops-token: ${{ secrets.GITOPS_TOKEN }}
     - name: Retrieve fleet-ms app-deploy.yaml
       uses: actions/download-artifact@v2
       with:
