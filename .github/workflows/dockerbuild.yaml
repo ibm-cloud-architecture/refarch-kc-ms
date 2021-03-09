@@ -33,6 +33,7 @@ jobs:
         validate_secret DOCKER_USERNAME ${DOCKER_USERNAME}
         validate_secret DOCKER_PASSWORD ${DOCKER_PASSWORD}
         validate_secret DOCKER_REPOSITORY ${DOCKER_REPOSITORY}
+        validate_secret DOCKER_REGISTRY ${DOCKER_REGISTRY}
         validate_secret DOCKER_IMAGE_FLEET ${DOCKER_IMAGE_FLEET}
         validate_secret DOCKER_IMAGE_VOYAGES ${DOCKER_IMAGE_VOYAGES}
         validate_secret GITOPS_EMAIL ${GITOPS_EMAIL}
@@ -46,6 +47,7 @@ jobs:
         DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
         DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
         DOCKER_REPOSITORY: ${{ secrets.DOCKER_REPOSITORY }}
+        DOCKER_REGISTRY: ${{ secrets.DOCKER_REGISTRY }}
         DOCKER_IMAGE_FLEET: ${{ secrets.DOCKER_IMAGE_FLEET }}
         DOCKER_IMAGE_VOYAGES: ${{ secrets.DOCKER_IMAGE_VOYAGES }}
         GITOPS_EMAIL: ${{ secrets.GITOPS_EMAIL }}
@@ -70,8 +72,8 @@ jobs:
     - name: Build the fleet-ms docker image
       id: build-fleet-image
       run: |
-        IMAGE_NAME="${DOCKER_R}/${DOCKER_I}"
-        docker login -u ${DOCKER_U} -p ${DOCKER_P}
+        IMAGE_NAME="${DOCKER_REG}/${DOCKER_R}/${DOCKER_I}"
+        docker login -u ${DOCKER_U} -p ${DOCKER_P} ${DOCKER_REG}
 
         echo "Build and push the docker image"
         cd ${WORKDIR}
@@ -83,8 +85,8 @@ jobs:
         DOCKER_P: ${{ secrets.DOCKER_PASSWORD }}
         DOCKER_R: ${{ secrets.DOCKER_REPOSITORY }}
         DOCKER_I: ${{ secrets.DOCKER_IMAGE_FLEET }}
+        DOCKER_REG: ${{ secrets.DOCKER_REGISTRY }}
         WORKDIR: fleet-ms
-        DOCKERFILE: Dockerfile.multistage
         IMAGE_TAG: ${{ steps.bump-version-action.outputs.new_tag }}
     - name: Save fleet-ms app-deploy.yaml
       uses: actions/upload-artifact@v2
@@ -94,8 +96,8 @@ jobs:
     - name: Build the voyages-ms docker image
       id: build-voyages-image
       run: |
-        IMAGE_NAME="${DOCKER_R}/${DOCKER_I}"
-        docker login -u ${DOCKER_U} -p ${DOCKER_P}
+        IMAGE_NAME="${DOCKER_REG}/${DOCKER_R}/${DOCKER_I}"
+        docker login -u ${DOCKER_U} -p ${DOCKER_P} ${DOCKER_REG}
 
         echo "Build and push the docker image"
         cd ${WORKDIR}
@@ -107,8 +109,8 @@ jobs:
         DOCKER_P: ${{ secrets.DOCKER_PASSWORD }}
         DOCKER_R: ${{ secrets.DOCKER_REPOSITORY }}
         DOCKER_I: ${{ secrets.DOCKER_IMAGE_VOYAGES }}
+        DOCKER_REG: ${{ secrets.DOCKER_REGISTRY }}
         WORKDIR: voyages-ms
-        DOCKERFILE: Dockerfile
         IMAGE_TAG: ${{ steps.bump-version-action.outputs.new_tag }}
     - name: Save voyages-ms app-deploy.yaml
       uses: actions/upload-artifact@v2

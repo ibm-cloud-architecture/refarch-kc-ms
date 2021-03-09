@@ -38,7 +38,7 @@ metadata:
     stack.appsody.dev/version: 0.4.13
   name: voyages-ms
 spec:
-  applicationImage: ibmcase/kcontainer-voyages-ms:latest
+  applicationImage: quay.io/ibmcase/kcontainer-voyages-ms:latest
   createKnativeService: false
   env:
   - name: PORT

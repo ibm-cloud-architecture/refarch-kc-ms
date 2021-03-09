@@ -62,7 +62,7 @@ metadata:
     stack.appsody.dev/version: 0.2.14
   name: fleet-ms
 spec:
-  applicationImage: josiemundi/fleet-ms
+  applicationImage: quay.io/ibmcase/kcontainer-fleet-ms:latest
   createKnativeService: false
   env:
   - name: KAFKA_BROKERS
