@@ -27,23 +27,23 @@ import ibm.labs.kc.simulator.ShipSimulator;
  *
  */
 public class TestHeatWaveSimulation  {
-   
+
 	 @Mock
 	 static ShipPositionProducer positionProducerMock;
 	 @Mock
 	 static ContainerMetricsProducer containerProducerMock;
-	 
-	 @Rule public MockitoRule mockitoRule = MockitoJUnit.rule(); 
-	 
+
+	 @Rule public MockitoRule mockitoRule = MockitoJUnit.rule();
+
 	 public static ShipService serv;
-	
-	
+
+
 	@Before
 	public   void init() {
-		 ShipSimulator s = new ShipSimulator(positionProducerMock,containerProducerMock);		 
-		 serv =  new ShipService(DAOFactory.buildOrGetShipDAOInstance("Fleet.json"),s);
+		 ShipSimulator s = new ShipSimulator(positionProducerMock,containerProducerMock);
+		 serv =  new ShipService(DAOFactory.buildShipDAOInstance("Fleet.json"),s);
 	}
-	
+
 	public void printShip(Ship s) {
 		for (List<Container> row : s.getContainers()) {
 			for (Container c : row) {
@@ -52,7 +52,7 @@ public class TestHeatWaveSimulation  {
 			System.out.println("\n---------------------");
 		}
 	}
-	
+
 	@Test
 	public void validateHeatWave() throws InterruptedException {
 		System.out.println("Validate heat wave on top containers");
